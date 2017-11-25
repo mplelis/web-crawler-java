@@ -32,8 +32,8 @@ Example:
 **-cl** stands for crawl limit and when it is used, it sets a limit for the pages to be crawled and this number is parsed from the second argument which is given to the program.  
 If no arguments are given, then the web crawler, will crawl all the URLs till there are no more left.
 
-Examples:
-* java -jar webCrawler.jar -cl 10
-* java -jar webCrawler.jar
+- Examples:  
+	* java -jar webCrawler.jar -cl 10  
+	* java -jar webCrawler.jar  
 
 4. When the application is executed, it is asking for a valid URL to be given, in order to start crawling.
