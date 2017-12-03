@@ -21,8 +21,9 @@ public class webCrawlerIntegrationTests {
 	@Test
 	public void processingURLWithoutHttpProtocolPrefixShouldReturnFalse() throws IOException {
 		PageProcessor pageProcessor = new PageProcessorImpl();
-		boolean isProcessedURLValid = pageProcessor.processURL("www.bbc.com");
-		assertFalse("\"www.bbc.com\" should return false", isProcessedURLValid);
+		String url = "www.bbc.com";
+		boolean isProcessedURLValid = pageProcessor.processURL(url);
+		assertFalse("\"" + url + "\" should return false", isProcessedURLValid);
 		assertTrue(pageProcessor.getContainedLinks().isEmpty());
 		assertEquals(0, pageProcessor.getResponseCode());
 	}
@@ -30,8 +31,9 @@ public class webCrawlerIntegrationTests {
 	@Test
 	public void processingURLWithHttpProtocolPrefixShouldReturnTrue() throws IOException {
 		PageProcessor pageProcessor = new PageProcessorImpl();
-		boolean isProcessedURLValid = pageProcessor.processURL("https://www.bbc.com/");
-		assertTrue("\"https://www.bbc.com/\" should return true", isProcessedURLValid);
+		String url = "https://www.bbc.com/";
+		boolean isProcessedURLValid = pageProcessor.processURL(url);
+		assertTrue("\"" + url + "\" should return true", isProcessedURLValid);
 		assertNotNull(pageProcessor.getContainedLinks());
 		assertEquals(200, pageProcessor.getResponseCode());
 	}
@@ -43,9 +45,10 @@ public class webCrawlerIntegrationTests {
 		// and crawledPagesCounterThreshold to 10, to set the threshold
 		// of crawled pages to a limit.
 		ResultsHolder holder = new ResultsHolder(0, 10);
+		String url = "https://www.bbc.com/";
+		holder.setDomain(url.split("/")[2]);
 		PageCrawler pageCrawler = new PageCrawlerImpl(holder);
-		holder.getUnvisitedUrlsBlockingQueue().add("https://www.bbc.com/");
-
+		holder.getUnvisitedUrlsBlockingQueue().add(url);
 		pageCrawler.scanPage();
 		String json = holder.getProcessedPagesStringInJsonFormat();
 		assertNotNull("A valid URL should return a Not Null json string representation.", json);
@@ -58,7 +61,9 @@ public class webCrawlerIntegrationTests {
 		// of crawled pages to a limit.
 		ResultsHolder holder = new ResultsHolder(0, 10);
 		PageCrawler pageCrawler = new PageCrawlerImpl(holder);
-		holder.getUnvisitedUrlsBlockingQueue().add("https://www.bbccc.coom/");
+		String url = "https://www.bbccc.coom/";
+		holder.setDomain(url.split("/")[2]);
+		holder.getUnvisitedUrlsBlockingQueue().add(url);
 		pageCrawler.scanPage();
 		String json = holder.getProcessedPagesStringInJsonFormat();
 		assertNull("An invalid URL should return a Null json string representation.", json);
@@ -71,7 +76,9 @@ public class webCrawlerIntegrationTests {
 		// and crawledPagesCounterThreshold to 10, to set the threshold
 		// of crawled pages to a limit.
 		ResultsHolder holder = new ResultsHolder(0, 10);
-		holder.getUnvisitedUrlsBlockingQueue().add("https://www.bbc.com/");
+		String url = "https://www.bbc.com/";
+		holder.setDomain(url.split("/")[2]);
+		holder.getUnvisitedUrlsBlockingQueue().add(url);
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 

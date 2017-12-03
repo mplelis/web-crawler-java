@@ -43,7 +43,7 @@ public class PageCrawlerImpl implements PageCrawler {
 
 		URL = unvisitedUrlsBlockingQueue.take();
 		
-		String domain = URL.split("/")[2];
+		String domain = resultsHolder.getDomain();
 		int responseCode;
 		do {
 			if (!URL.split("/")[2].equals(domain)) {

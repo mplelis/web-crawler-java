@@ -16,6 +16,7 @@ import webcrawler.page.Page;
 
 public class ResultsHolder {
 
+	private String domain;
 	private volatile int crawledPagesCounter;
 	private int crawledPagesCounterThreshold;
 
@@ -44,6 +45,14 @@ public class ResultsHolder {
 		this.synchronizedVisitedURLsSet = Collections.synchronizedSet(new HashSet<>());
 		// Instantiate the unvisited URLs queue
 		this.unvisitedUrlsBlockingQueue = new LinkedBlockingQueue<String>();
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 	public int getCrawledPagesCounter() {
