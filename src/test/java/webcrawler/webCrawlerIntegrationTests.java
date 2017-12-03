@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -82,9 +83,7 @@ public class webCrawlerIntegrationTests {
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
-		for (int i = 0; i < 3; i++) {
-			executor.submit(new ConcurrentScanner(holder));
-		}
+		IntStream.range(0, 3).forEach(i -> executor.submit(new ConcurrentScanner(holder)));
 
 		executor.shutdown();
 		executor.awaitTermination(5, TimeUnit.MINUTES);
