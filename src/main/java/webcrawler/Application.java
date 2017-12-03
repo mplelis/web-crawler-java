@@ -68,6 +68,7 @@ public class Application {
 		}
 		sc.close();
 
+		resultsHolder.setDomain(userInputURL.split("/")[2]);
 		resultsHolder.getUnvisitedUrlsBlockingQueue().add(userInputURL);
 		
 		long timeStampMillisStart = Instant.now().toEpochMilli();
