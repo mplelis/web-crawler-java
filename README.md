@@ -1,7 +1,7 @@
 # Web Crawler
 ### Author : Mihalis Plelis
 
-The web crawler, crawls URLs and for each page, it determines the URLs of every static asset (images, javascript, stylesheets) on that page.  
+The concurrent web crawler, crawls URLs and for each page, it determines the URLs of every static asset (images, javascript, stylesheets) on that page. By default, a thread pool of 10 threads is used.
 The crawler outputs to STDOUT in JSON format listing the URLs of every static asset, grouped by page.
 
 Example:  
