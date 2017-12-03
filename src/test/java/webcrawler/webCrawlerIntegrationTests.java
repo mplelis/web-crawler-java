@@ -82,12 +82,12 @@ public class webCrawlerIntegrationTests {
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 3; i++) {
 			executor.submit(new ConcurrentScanner(holder));
 		}
 
 		executor.shutdown();
-		executor.awaitTermination(1, TimeUnit.DAYS);
+		executor.awaitTermination(5, TimeUnit.MINUTES);
 
 		String json = holder.getProcessedPagesStringInJsonFormat();
 		assertNotNull("A valid URL should return a Not Null json string representation.", json);

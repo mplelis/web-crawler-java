@@ -85,11 +85,16 @@ public class Application {
 			long timeStampMillisEnd = Instant.now().toEpochMilli();
 			String resultsJsonRepresentation = resultsHolder.getProcessedPagesStringInJsonFormat();
 			System.out.println("Printing URL's Representation in JSON Format...\n\n" + resultsJsonRepresentation + "\n");
-			System.out.println("Took " + (timeStampMillisEnd - timeStampMillisStart) + " milliseconds");
+			System.out.println("Took " + (timeStampMillisEnd - timeStampMillisStart) + " milliseconds to finish.");
 		} catch (Exception e) {
 			System.out.println("Unfortunately something went wrong.\n" + e.getMessage());
 			e.printStackTrace();
+		} finally {
+			if (!executor.isTerminated()) {
+				System.err.println("Non-finished tasks are going to be cancelled.");
+				executor.shutdownNow();
+			}
 		}
-
+		System.out.println("Shutdown finished.");
 	}
 }
