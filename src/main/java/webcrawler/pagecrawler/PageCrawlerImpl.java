@@ -69,15 +69,15 @@ public class PageCrawlerImpl implements PageCrawler {
 				URL = getFinalURLAfterRedirects(URL);
 			}
 
-			if (resultsHolder.getCrawledPagesCounter() >= 0) {
-				resultsHolder.setCrawledPagesCounter(resultsHolder.getCrawledPagesCounter() + 1);
+			if (resultsHolder.getCrawledPagesCounter().get() >= 0) {
+				resultsHolder.incrementCrawledPagesCounter();
 			}
 			
 			synchronizedProcessedPagesList.add(pageProcessor.getPage());
 
 			unvisitedUrlsBlockingQueue.addAll(pageProcessor.getContainedLinks());
 			URL = getNextURL();
-		} while (!unvisitedUrlsBlockingQueue.isEmpty() && resultsHolder.getCrawledPagesCounter() < resultsHolder.getCrawledPagesCounterThreshold());
+		} while (!unvisitedUrlsBlockingQueue.isEmpty() && resultsHolder.getCrawledPagesCounter().get() < resultsHolder.getCrawledPagesCounterThreshold());
 	}
 
 	private String getNextURL() {

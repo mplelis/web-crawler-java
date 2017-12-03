@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -17,7 +18,7 @@ import webcrawler.page.Page;
 public class ResultsHolder {
 
 	private String domain;
-	private volatile int crawledPagesCounter;
+	private AtomicInteger crawledPagesCounter;
 	private int crawledPagesCounterThreshold;
 
 	private List<Page> synchronizedProcessedPagesList = Collections.synchronizedList(new LinkedList<>());
@@ -26,7 +27,7 @@ public class ResultsHolder {
 
 
 	public ResultsHolder(int crawledPagesCounter, int crawledPagesCounterThreshold, String urlDomain) {
-		this.crawledPagesCounter = crawledPagesCounter;
+		this.crawledPagesCounter = new AtomicInteger(crawledPagesCounter);
 		this.crawledPagesCounterThreshold = crawledPagesCounterThreshold;
 		this.domain = urlDomain;
 
@@ -46,11 +47,11 @@ public class ResultsHolder {
 		this.domain = domain;
 	}
 
-	public int getCrawledPagesCounter() {
+	public AtomicInteger getCrawledPagesCounter() {
 		return crawledPagesCounter;
 	}
 
-	public void setCrawledPagesCounter(int crawledPagesCounter) {
+	public void setCrawledPagesCounter(AtomicInteger crawledPagesCounter) {
 		this.crawledPagesCounter = crawledPagesCounter;
 	}
 
@@ -82,6 +83,10 @@ public class ResultsHolder {
 		List<Page> listOfResults = synchronizedProcessedPagesList.stream().limit(crawledPagesCounterThreshold).collect(Collectors.toList());
 		String json = gson.toJson(listOfResults);
 		return json;
+	}
+
+	public void incrementCrawledPagesCounter() {
+		this.crawledPagesCounter.incrementAndGet();
 	}
 
 }
