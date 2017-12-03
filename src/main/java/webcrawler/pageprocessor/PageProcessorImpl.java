@@ -1,4 +1,4 @@
-package webCrawler.PageProcessor;
+package webcrawler.pageprocessor;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -10,9 +10,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import webCrawler.Page.Page;
-import webCrawler.Page.PageImpl;
-import webCrawler.PageProcessor.PageProcessor;
+import webcrawler.page.Page;
+import webcrawler.page.PageImpl;
+import webcrawler.pageprocessor.PageProcessor;
 
 public class PageProcessorImpl implements PageProcessor {
 
@@ -32,7 +32,7 @@ public class PageProcessorImpl implements PageProcessor {
 	public boolean processURL(String URL) throws IOException {
 		try {
 			page.setURL(URL);
-			System.out.println(URL);
+			System.out.println("Thread: " + Thread.currentThread().getName() + " is processing URL : " + URL);
 			
 			Response response = Jsoup.connect(URL).timeout(1000).userAgent(USER_AGENT).execute();
 			document = response.parse();

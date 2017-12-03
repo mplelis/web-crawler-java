@@ -1,38 +1,38 @@
-package webCrawler;
+package webcrawler;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import webCrawler.PageCrawler.PageCrawler;
-import webCrawler.PageCrawler.PageCrawlerImpl;
-import webCrawler.PageProcessor.PageProcessor;
-import webCrawler.PageProcessor.PageProcessorImpl;
-import webCrawler.URLValidator.URLValidator;
+import webcrawler.concurrentscanner.ConcurrentScanner;
+import webcrawler.pageprocessor.PageProcessor;
+import webcrawler.pageprocessor.PageProcessorImpl;
+import webcrawler.results.ResultsHolder;
+import webcrawler.util.URLValidator;
 
 public class Application {
 
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
 	public static void main(String[] args) throws IOException {
 		System.out.println("Web Crawling Application has started!\n");
+		ResultsHolder resultsHolder = null;
 		try {
 			if (args[0] != null || !args[0].isEmpty() && args[1] != null || !args[1].isEmpty()) {
 				if (args[0].equals("-cl") && Integer.parseInt(args[1]) > 0) {
-					PageCrawlerImpl.crawledPagesCounter = 0;
-					PageCrawlerImpl.crawledPagesCounterThreshold = Integer.valueOf(args[1]);
-					System.out.println("The Application will crawl the first "
-							+ PageCrawlerImpl.crawledPagesCounterThreshold + " pages.\n");
+					resultsHolder = new ResultsHolder(0, Integer.valueOf(args[1]));
+					System.out
+							.println("The Application will crawl the first " + Integer.valueOf(args[1]) + " pages.\n");
 				} else {
+					resultsHolder = new ResultsHolder(-1);
 					System.out.println("The Application will crawl to the end.\n");
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-			System.out.println("Invalid Arguments were provided.\n" + 
-					"The Application will crawl to the end.\n");
+			System.out.println("Invalid Arguments were provided.\n" + "The Application will crawl to the end.\n");
 		}
-		
+
 		String userInputURL;
 		// scan for user input URL
 		Scanner sc = new Scanner(System.in);
@@ -53,7 +53,7 @@ public class Application {
 					PageProcessor pageProcessor = new PageProcessorImpl();
 					pageProcessor.processURL(userInputURL);
 					int responseCode = pageProcessor.getResponseCode();
-					if (responseCode>=200 && responseCode<400) {
+					if (responseCode >= 200 && responseCode < 400) {
 						System.out.println("Accessible URL, proceeding with web crawling...\n");
 						break;
 					} else {
@@ -67,12 +67,25 @@ public class Application {
 			}
 		}
 		sc.close();
+
+		resultsHolder.getUnvisitedUrlsBlockingQueue().add(userInputURL);
 		
-		PageCrawler pageScanner = new PageCrawlerImpl();
+		long timeStampMillisStart = Instant.now().toEpochMilli();
+
+		ExecutorService executor = Executors.newFixedThreadPool(10);
 		try {
 			System.out.println("Crawling the following URLs\n");
-			pageScanner.scanPage(userInputURL);
-			System.out.println("\n" + pageScanner.getProcessedPagesStringInJsonFormat());
+			for (int i = 0; i < 10; i++) {
+				executor.submit(new ConcurrentScanner(resultsHolder));
+			}
+
+			executor.shutdown();
+			executor.awaitTermination(1, TimeUnit.DAYS);
+
+			long timeStampMillisEnd = Instant.now().toEpochMilli();
+			String resultsJsonRepresentation = resultsHolder.getProcessedPagesStringInJsonFormat();
+			System.out.println("Printing URL's Representation in JSON Format...\n\n" + resultsJsonRepresentation + "\n");
+			System.out.println("Took " + (timeStampMillisEnd - timeStampMillisStart) + " milliseconds");
 		} catch (Exception e) {
 			System.out.println("Unfortunately something went wrong.\n" + e.getMessage());
 			e.printStackTrace();

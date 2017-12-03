@@ -1,11 +1,11 @@
-package webCrawler.PageProcessor;
+package webcrawler.pageprocessor;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import webCrawler.Page.Page;
+import webcrawler.page.Page;
 
 public interface PageProcessor {
 

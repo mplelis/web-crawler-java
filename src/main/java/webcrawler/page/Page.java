@@ -1,4 +1,4 @@
-package webCrawler.Page;
+package webcrawler.page;
 
 import java.util.List;
 

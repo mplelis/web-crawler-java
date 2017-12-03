@@ -1,23 +1,22 @@
-package webCrawler;
+package webcrawler;
 
 import static org.junit.Assert.*;
+
+import webcrawler.pageprocessor.PageProcessor;
+import webcrawler.pageprocessor.PageProcessorImpl;
+import webcrawler.results.ResultsHolder;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
 
-import webCrawler.PageCrawler.PageCrawler;
-import webCrawler.PageCrawler.PageCrawlerImpl;
-import webCrawler.PageProcessor.PageProcessor;
-import webCrawler.PageProcessor.PageProcessorImpl;
-
 public class webCrawlerUnitTests {
 
 	@Test
 	public void newPageCrawlerObjectShouldReturnNullJsonStringRepresentation() throws IOException {
-		PageCrawler pageCrawler = new PageCrawlerImpl();
-		String json = pageCrawler.getProcessedPagesStringInJsonFormat();
+		ResultsHolder holder = new ResultsHolder(0,0);
+		String json = holder.getProcessedPagesStringInJsonFormat();
 		assertNull(json);
 	}
 	

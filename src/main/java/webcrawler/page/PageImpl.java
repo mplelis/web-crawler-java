@@ -1,8 +1,8 @@
-package webCrawler.Page;
+package webcrawler.page;
 
 import java.util.List;
 
-import webCrawler.Page.Page;
+import webcrawler.page.Page;
 
 public class PageImpl implements Page {
 
