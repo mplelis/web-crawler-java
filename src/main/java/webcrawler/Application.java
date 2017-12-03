@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import webcrawler.concurrentscanner.ConcurrentScanner;
 import webcrawler.pageprocessor.PageProcessor;
@@ -17,15 +18,14 @@ public class Application {
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("Web Crawling Application has started!\n");
-		ResultsHolder resultsHolder = null;
+		int crawledPagesCounter = -1, crawledPagesCounterThreshold = 10;
 		try {
 			if (args[0] != null || !args[0].isEmpty() && args[1] != null || !args[1].isEmpty()) {
 				if (args[0].equals("-cl") && Integer.parseInt(args[1]) > 0) {
-					resultsHolder = new ResultsHolder(0, Integer.valueOf(args[1]));
-					System.out
-							.println("The Application will crawl the first " + Integer.valueOf(args[1]) + " pages.\n");
+					crawledPagesCounter = 0;
+					crawledPagesCounterThreshold = Integer.valueOf(args[1]);
+					System.out.println("The Application will crawl the first " + Integer.valueOf(args[1]) + " pages.\n");
 				} else {
-					resultsHolder = new ResultsHolder(-1);
 					System.out.println("The Application will crawl to the end.\n");
 				}
 			}
@@ -68,17 +68,16 @@ public class Application {
 		}
 		sc.close();
 
-		resultsHolder.setDomain(userInputURL.split("/")[2]);
-		resultsHolder.getUnvisitedUrlsBlockingQueue().add(userInputURL);
+		String urlDomain = userInputURL.split("/")[2];
 		
 		long timeStampMillisStart = Instant.now().toEpochMilli();
-
+		final ResultsHolder resultsHolder = new ResultsHolder(crawledPagesCounter, crawledPagesCounterThreshold,
+				urlDomain);
+		resultsHolder.getUnvisitedUrlsBlockingQueue().add(userInputURL);
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		try {
-			System.out.println("Crawling the following URLs\n");
-			for (int i = 0; i < 10; i++) {
-				executor.submit(new ConcurrentScanner(resultsHolder));
-			}
+			System.out.println("Crawling URLs now...\n");
+			IntStream.range(0,10).forEach(i -> executor.submit(new ConcurrentScanner(resultsHolder)));
 
 			executor.shutdown();
 			executor.awaitTermination(1, TimeUnit.DAYS);
