@@ -41,12 +41,12 @@ public class webCrawlerIntegrationTests {
 	@Test
 	public void crawlingValidURLShouldReturnANotNullJsonStringRepresentation()
 			throws IOException, InterruptedException {
+		String url = "https://www.bbc.com/";
+		String urlDomain = url.split("/")[2];
 		// setting crawledPagesCounter to 0, to enable counting crawled pages
 		// and crawledPagesCounterThreshold to 10, to set the threshold
 		// of crawled pages to a limit.
-		ResultsHolder holder = new ResultsHolder(0, 10);
-		String url = "https://www.bbc.com/";
-		holder.setDomain(url.split("/")[2]);
+		ResultsHolder holder = new ResultsHolder(0, 10, urlDomain);
 		PageCrawler pageCrawler = new PageCrawlerImpl(holder);
 		holder.getUnvisitedUrlsBlockingQueue().add(url);
 		pageCrawler.scanPage();
@@ -56,13 +56,13 @@ public class webCrawlerIntegrationTests {
 
 	@Test
 	public void crawlingInvalidURLShouldReturnANullJsonStringRepresentation() throws IOException, InterruptedException {
+		String url = "https://www.bbccc.coom/";
+		String urlDomain = url.split("/")[2];
 		// setting crawledPagesCounter to 0, to enable counting crawled pages
 		// and crawledPagesCounterThreshold to 10, to set the threshold
 		// of crawled pages to a limit.
-		ResultsHolder holder = new ResultsHolder(0, 10);
+		ResultsHolder holder = new ResultsHolder(0, 10, urlDomain);
 		PageCrawler pageCrawler = new PageCrawlerImpl(holder);
-		String url = "https://www.bbccc.coom/";
-		holder.setDomain(url.split("/")[2]);
 		holder.getUnvisitedUrlsBlockingQueue().add(url);
 		pageCrawler.scanPage();
 		String json = holder.getProcessedPagesStringInJsonFormat();
@@ -72,17 +72,16 @@ public class webCrawlerIntegrationTests {
 	@Test
 	public void crawlingValidURLShouldReturnANotNullJsonStringRepresentationUsingConcurrency()
 			throws IOException, InterruptedException {
+		String url = "https://www.bbc.com/";
+		String urlDomain = url.split("/")[2];
 		// setting crawledPagesCounter to 0, to enable counting crawled pages
 		// and crawledPagesCounterThreshold to 10, to set the threshold
 		// of crawled pages to a limit.
-		ResultsHolder holder = new ResultsHolder(0, 10);
-		String url = "https://www.bbc.com/";
-		holder.setDomain(url.split("/")[2]);
+		ResultsHolder holder = new ResultsHolder(0, 10, urlDomain);
 		holder.getUnvisitedUrlsBlockingQueue().add(url);
 
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
-		System.out.println("Crawling the following URLs\n");
 		for (int i = 0; i < 10; i++) {
 			executor.submit(new ConcurrentScanner(holder));
 		}

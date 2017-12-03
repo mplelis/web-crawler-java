@@ -24,21 +24,12 @@ public class ResultsHolder {
 	private Set<String> synchronizedVisitedURLsSet = Collections.synchronizedSet(new HashSet<>());
 	private BlockingQueue<String> unvisitedUrlsBlockingQueue = new LinkedBlockingQueue<String>();
 
-	public ResultsHolder(int crawledPagesCounter, int crawledPagesCounterThreshold) {
+
+	public ResultsHolder(int crawledPagesCounter, int crawledPagesCounterThreshold, String urlDomain) {
 		this.crawledPagesCounter = crawledPagesCounter;
 		this.crawledPagesCounterThreshold = crawledPagesCounterThreshold;
+		this.domain = urlDomain;
 
-		// Instantiate the processed page list
-		this.synchronizedProcessedPagesList = Collections.synchronizedList(new LinkedList<>());
-		// Instantiate the set to import the unique URLs we have visited
-		this.synchronizedVisitedURLsSet = Collections.synchronizedSet(new HashSet<>());
-		// Instantiate the unvisited URLs queue
-		this.unvisitedUrlsBlockingQueue = new LinkedBlockingQueue<String>();
-	}
-
-	public ResultsHolder(int crawledPagesCounter) {
-		this.crawledPagesCounter = crawledPagesCounter;
-		
 		// Instantiate the processed page list
 		this.synchronizedProcessedPagesList = Collections.synchronizedList(new LinkedList<>());
 		// Instantiate the set to import the unique URLs we have visited

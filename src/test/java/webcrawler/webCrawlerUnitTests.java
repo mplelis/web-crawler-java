@@ -15,7 +15,7 @@ public class webCrawlerUnitTests {
 
 	@Test
 	public void newPageCrawlerObjectShouldReturnNullJsonStringRepresentation() throws IOException {
-		ResultsHolder holder = new ResultsHolder(0,0);
+		ResultsHolder holder = new ResultsHolder(0, 0, "");
 		String json = holder.getProcessedPagesStringInJsonFormat();
 		assertNull(json);
 	}
